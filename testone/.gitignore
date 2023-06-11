@@ -21,3 +21,30 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.DS_Store
+
+front/package-lock.json
+
+back/.env
+
+back/composer.lock
+
+back/symfony.lock
+
+back/node_modules/
+
+back/migrations/
+
+.vscode/
+
+front/docker-compose.yml
+
+back/docker-compose.yml
+
+back/docker-compose.yaml
+
+front/docker-compose.yaml
+
+# back/publicuploads/
+
+# back/public/uploads/

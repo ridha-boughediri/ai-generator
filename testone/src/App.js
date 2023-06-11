@@ -4,8 +4,8 @@ import TextGene from "./components/Textgerate/TextGene";
 function App() {
   return (
     <div className="">
-      <div className="w-8/12 justify-center items-center ">
-        <div className="flex justify-center items-center">
+      <div className="items-center justify-center w-8/12 ">
+        <div className="flex items-center justify-center">
           <h1 className="text-4xl font-bold text-center">Generator</h1>
         </div>
         <TextGene />

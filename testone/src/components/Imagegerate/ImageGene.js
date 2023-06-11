@@ -1,39 +1,47 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const ImageGen = () => {
   const [generatedImage, setGeneratedImage] = useState(
     "https://placehold.co/600x400"
   );
   const [inputValue, setInputValue] = useState("");
-
-  const handleGenerateImage = async () => {
-    try {
-      // Call the OpenAI API to generate the image based on the inputValue
-      const response = await fetch("yourOpenAIApiEndpoint", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any required headers for your API
-        },
-        body: JSON.stringify({ inputValue }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate image");
-      }
-
-      const generatedImage = await response.json();
-
-      // Update the state with the generated image
-      setGeneratedImage(generatedImage);
-    } catch (error) {
-      console.error(error);
-      // Handle the error appropriately (e.g., show an error message)
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const handleGenerateImage = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://api.openai.com/v1/images/generations",
+
+        {
+          prompt: inputValue,
+          n: 1,
+          size: "600x400",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`, // Remplacez YOUR_API_KEY_HERE par votre clé d'API
+          },
+        }
+      );
+
+      const generatedImage = response.data.images[0].url;
+      setGeneratedImage(generatedImage);
+      console.log("Generated Image:", generatedImage);
+    } catch (error) {
+      console.error("Error:", error);
+      // Gérez l'erreur de manière appropriée (par exemple, affichez un message d'erreur)
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -42,8 +50,7 @@ const ImageGen = () => {
         Generate an Image
       </h2>
 
-      <form>
-        {/* Your form inputs here */}
+      <form onSubmit={handleGenerateImage}>
         <div className="relative mb-3" data-te-input-wrapper-init>
           <textarea
             id="comment"
@@ -58,11 +65,11 @@ const ImageGen = () => {
         </div>
 
         <button
-          onClick={handleGenerateImage}
-          type="button"
+          type="submit"
           className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+          disabled={loading}
         >
-          Generate Image
+          {loading ? "Generating..." : "Generate Image"}
         </button>
 
         {/* Display the generated image */}
